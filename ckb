@@ -1,0 +1,9 @@
+#!/bin/bash -xeu
+
+pid=`ps -ef | grep ckb-next-daemon | awk '{ print $2 }'`
+IFS=' '
+read -r -a pid <<< "$pid"
+sudo kill -9  ${pid[@]}
+
+#let the new daemon read in devices.
+sleep 3
