@@ -1,0 +1,11 @@
+###
+RUST
+###
+
+
+`std::fmt::Display` <-- this trait needs to be implemented for a struct to be printable.
+
+std::fmt::Debug for printing things like {:?}
+#[derive(Debug)] for auto implementing Debug trait.
+
+
