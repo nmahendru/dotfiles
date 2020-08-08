@@ -1,22 +1,8 @@
-" Sample .vimrc file by Martin Brochhaus
-" Presented at PyCon APAC 2012
-
-
-" ============================================
-" Note to myself:
-" DO NOT USE <C-z> FOR SAVING WHEN PRESENTING!
-" ============================================
-
-
-" Automatic reloading of .vimrc
-autocmd! bufwritepost .vimrc source %
-
-
-" Better copy & paste
-" When you want to paste large blocks of code into vim, press F2 before you
-" paste. At the bottom you should see ``-- INSERT (paste) --``.
-
-set pastetoggle=<F2>
+set hlsearch
+syntax on
+set autoindent
+" Autoread any file that is changed outside of vim
+set autoread
 set clipboard=unnamed
 
 
@@ -30,13 +16,6 @@ set bs=2     " make backspace behave like normal again
 " it is next to ``m`` and ``n`` which I use for navigating between tabs.
 let mapleader = ","
 
-
-" Bind nohl
-" Removes highlight of your last search
-" ``<C>`` stands for ``CTRL`` and therefore ``<C-n>`` stands for ``CTRL+n``
-"" noremap <C-n> :nohl<CR>
-"" vnoremap <C-n> :nohl<CR>
-"" inoremap <C-n> :nohl<CR>
 
 
 " Quicksave command
@@ -64,11 +43,6 @@ map <c-h> <c-w>h
 map <Leader>n <esc>:tabprevious<CR>
 map <Leader>m <esc>:tabnext<CR>
 
-
-" map sort function to a key
-"" vnoremap <Leader>s :sort<CR>
-
-
 " easier moving of code blocks
 " Try to go into visual mode (v), thenselect several lines of code here and
 " then press ``>`` several times.
@@ -79,7 +53,6 @@ vnoremap > >gv  " better indentation
 " Show whitespace
 " MUST be inserted BEFORE the colorscheme command
 autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-au InsertLeave * match ExtraWhitespace /\s\+$/
 
 
 " Color scheme
@@ -89,21 +62,15 @@ set t_Co=256
 color wombat256mod
 
 
-" Enable syntax highlighting
-" You need to reload this file for the change to apply
-filetype off
-filetype plugin indent on
-syntax on
-
-
 " Showing line numbers and length
 set number  " show line numbers
-set tw=119   " width of document (used by gd)
-set nowrap  " don't automatically wrap on load
-set fo-=t   " don't automatically wrap text when typing
+" set w=119   " width of document (used by gd)
+" set owrap  " don't automatically wrap on load
+" set o-=t   " don't automatically wrap text when typing
 set colorcolumn=119
 highlight ColorColumn ctermbg=233
 
+set background=dark
 
 " Useful settings
 set history=700
@@ -119,68 +86,105 @@ set expandtab
 
 
 " Make search case insensitive
-set hlsearch
-set incsearch
-set ignorecase
-set smartcase
+" set hlsearch
+" set ncsearch
+" set gnorecase
+" set martcase
+
+" Toggle soft wrap
+noremap <Leader>z :set wrap!<CR>
+noremap <Leader>j !python3 -m json.tool %<CR>
+" These are used by many plugin which selectively enable functionality
+filetype on
+filetype plugin on
+
+" Settings for ALE plugin https://github.com/dense-analysis/ale
+" Settings specific to rust.
+"
+" The rust analyzer binary was downloaded using:
+" curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-mac -o ~/.cargo/bin/rust-analyzer
+" more details: https://rust-analyzer.github.io/manual.html#installation
+
+let g:ale_set_balloons = 1
+let g:ale_use_global_executables=1
+
+let g:ale_c_clangformat_executable='clang-format'
+let g:ale_c_clangd_executable='clangd'
+
+let g:ale_python_pycodestyle_executable='pycodestyle'
+let g:ale_python_pylint_executable='pylint'
+
+let g:ale_rust_analyzer_executable='rust-analyzer'
+let g:ale_rust_cargo_use_clippy = 1
+let g:ale_rust_cargo_clippy_options = ' --all-targets --all-features -- -D warnings '
+let g:ale_linters={
+\    'rust': ['analyzer', 'cargo'],
+\    'python': ['pylint', 'pycodestyle', 'pyls'],
+\    'c': ['clangd']
+\}
+" Autocompletion using rust is a little crazy.
+" turning it off for now until I figure out other stuff.
+let g:ale_completion_enabled = 1
+let g:ale_python_pycodestyle_options="--max-line-lngth=120 --exclude='prot,__pycache__,*pb2*,build' --format='PEP8: %(path)s@%(row)d,%(col)d [%(code)s] %(text)s'"
+let g:ale_python_pylint_options='--rcfile ~/pylint.cfg --reports=n --jobs=2 --score=n --disable=I --disable=fixme --ignore-patterns=".*_pb2(_grpc)?.py$" '
+let g:ale_fixers={
+\   'rust': ['rustfmt'],
+\   'python': ['isort', 'black'],
+\   'c': [ 'clang-format'],
+\}
+let g:ale_rust_rls_executable='/Users/nitin/.cargo/bin/rls'
+let g:ale_rust_rls_toolchain='stable'
+let g:ale_rust_rls_config={
+\   'rust': {
+\        'clippy_preference': 'on'
+\   }
+\ }
+" disable the red color for error highlights. hard to read the text under red
+" highlights.
+let g:ale_set_highlights = 0
+
+autocmd FileType rust noremap <Leader>r :ALEFindReferences<CR>
+
+" easily cycle through lint errors.
+autocmd FileType rust noremap <Leader>l :ALENext<CR>
+
+" open the autocomplete menu using racer.
+autocmd FileType rust inoremap <Leader>v <C-x><C-o>
+
+" ALE completion too eager fix
+" https://github.com/dense-analysis/ale/issues/1700
+autocmd FileType rust setlocal completeopt=menu,menuone,preview,noselect,noinsert
+autocmd FileType python setlocal completeopt=menu,menuone,preview,noselect,noinsert
+autocmd FileType c setlocal completeopt=menu,menuone,preview,noselect,noinsert
 
 
-" Disable stupid backup and swap files - they trigger too many events
-" for file system watchers
-"" set nobackup
-"" set nowritebackup
-"" set noswapfile
+" Setting for rust plugin https://github.com/rust-lang/rust.vim
+let g:rustfmt_autosave=1
+let g:rustfmt_options=''
 
-" Wrap text to the 79 character limit
-vmap Q gq
-nmap Q gqap
+" Settings for fzf vim
+" https://github.com/junegunn/fzf.vim
+set rtp+=/usr/local/bin/fzf
 
-" Setup Pathogen to manage your plugins
-" mkdir -p ~/.vim/autoload ~/.vim/bundle
-" curl -so ~/.vim/autoload/pathogen.vim https://raw.githubusercontent.com/tpope/vim-pathogen/master/autoload/pathogen.vim
-" Now you can install any plugin into a .vim/bundle/plugin-name/ folder
-call pathogen#infect()
+" Setting for vim-fugitive - git plugin
+" git@github.com:tpope/vim-fugitive.git
+"
+"
+" Settings for vim racer. For now trying ALE completion
+let g:racer_experimental_completer=1
+let g:racer_insert_paren=1
 
-
-" ============================================================================
-" Python IDE Setup
-" ============================================================================
-
-
-" Settings for vim-powerline
-" cd ~/.vim/bundle
-" git clone git://github.com/Lokaltog/vim-powerline.git
-set laststatus=2
-
-
-" Settings for ctrlp
-" cd ~/.vim/bundle
-" git clone https://github.com/kien/ctrlp.vim.git
-let g:ctrlp_max_height = 30
-set wildignore+=*.pyc
-set wildignore+=*_build/*
-set wildignore+=*/coverage/*
+" autocmd FileType rust nmap <buffer> gd  :ALEGoToDefinition<CR>
+augroup Racer
+    autocmd!
+    autocmd FileType rust nmap <buffer> gd         <Plug>(rust-def)
+    autocmd FileType rust nmap <buffer> gs         <Plug>(rust-def-split)
+    autocmd FileType rust nmap <buffer> gx         <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap <buffer> gt         <Plug>(rust-def-tab)
+    autocmd FileType rust nmap <buffer> <leader>gd <Plug>(rust-doc)
+    autocmd FileType rust nmap <buffer> <leader>gD <Plug>(rust-doc-tab)
+augroup END
 
 
-" Better navigating through omnicomplete option list
-" See http://stackoverflow.com/questions/2170023/how-to-map-keys-for-popup-menu-in-vim
-set completeopt=longest,menuone
-function! OmniPopup(action)
-    if pumvisible()
-        if a:action == 'j'
-            return "\<C-N>"
-        elseif a:action == 'k'
-            return "\<C-P>"
-        endif
-    endif
-    return a:action
-endfunction
-
-inoremap <silent><C-j> <C-R>=OmniPopup('j')<CR>
-inoremap <silent><C-k> <C-R>=OmniPopup('k')<CR>
-
-
-" Python folding
-" mkdir -p ~/.vim/ftplugin
-" wget -O ~/.vim/ftplugin/python_editing.vim http://www.vim.org/scripts/download_script.php?src_id=5492
-set nofoldenable
+" Settings for TagBar
+noremap <Leader>x :TagbarToggle<CR>
