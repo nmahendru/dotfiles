@@ -127,6 +127,8 @@ let g:ale_linters={
 let g:ale_completion_enabled = 1
 let g:ale_python_pycodestyle_options="--max-line-lngth=120 --exclude='prot,__pycache__,*pb2*,build' --format='PEP8: %(path)s@%(row)d,%(col)d [%(code)s] %(text)s'"
 let g:ale_python_pylint_options='--rcfile ~/pylint.cfg --reports=n --jobs=2 --score=n --disable=I --disable=fixme --ignore-patterns=".*_pb2(_grpc)?.py$" '
+
+let g:ale_c_clangd_options=" --background-index --completion-style=detailed --header-insertion=iwyu --suggest-missing-includes -j 3"
 let g:ale_fixers={
 \   'rust': ['rustfmt'],
 \   'python': ['isort', 'black'],
@@ -144,9 +146,13 @@ let g:ale_rust_rls_config={
 let g:ale_set_highlights = 0
 
 autocmd FileType rust noremap <Leader>r :ALEFindReferences<CR>
+autocmd FileType python noremap <Leader>r :ALEFindReferences<CR>
+autocmd FileType c noremap <Leader>r :ALEFindReferences<CR>
 
 " easily cycle through lint errors.
 autocmd FileType rust noremap <Leader>l :ALENext<CR>
+autocmd FileType python noremap <Leader>l :ALENext<CR>
+autocmd FileType c noremap <Leader>l :ALENext<CR>
 
 " open the autocomplete menu using racer.
 autocmd FileType rust inoremap <Leader>v <C-x><C-o>
