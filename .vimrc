@@ -93,7 +93,7 @@ set expandtab
 
 " Toggle soft wrap
 noremap <Leader>z :set wrap!<CR>
-noremap <Leader>j !python3 -m json.tool %<CR>
+noremap <Leader>j :python3 -m json.tool %<CR>
 " These are used by many plugin which selectively enable functionality
 filetype on
 filetype plugin on
@@ -105,7 +105,17 @@ filetype plugin on
 " curl -L https://github.com/rust-analyzer/rust-analyzer/releases/latest/download/rust-analyzer-mac -o ~/.cargo/bin/rust-analyzer
 " more details: https://rust-analyzer.github.io/manual.html#installation
 
-let g:ale_set_balloons = 1
+" ale lint
+let g:ale_lint_on_text_changed = 'never'
+let g:ale_lint_on_insert_leave = 0
+let g:ale_lint_on_enter = 1
+let g:ale_lint_on_save = 1
+let g:ale_lint_on_filetype_changed = 0
+
+" lint error preview
+let g:ale_cursor_detail = 1
+let g:ale_hover_to_preview = 1
+let g:ale_set_balloons = 0
 let g:ale_use_global_executables=1
 
 let g:ale_c_clangformat_executable='clang-format'
@@ -114,26 +124,8 @@ let g:ale_c_clangd_executable='clangd'
 let g:ale_python_pycodestyle_executable='pycodestyle'
 let g:ale_python_pylint_executable='pylint'
 
-let g:ale_rust_analyzer_executable='rust-analyzer'
-let g:ale_rust_cargo_use_clippy = 1
-let g:ale_rust_cargo_clippy_options = ' --all-targets --all-features -- -D warnings '
-let g:ale_linters={
-\    'rust': ['analyzer', 'cargo'],
-\    'python': ['pylint', 'pycodestyle', 'pyls'],
-\    'c': ['clangd']
-\}
-" Autocompletion using rust is a little crazy.
-" turning it off for now until I figure out other stuff.
-let g:ale_completion_enabled = 1
-let g:ale_python_pycodestyle_options="--max-line-lngth=120 --exclude='prot,__pycache__,*pb2*,build' --format='PEP8: %(path)s@%(row)d,%(col)d [%(code)s] %(text)s'"
-let g:ale_python_pylint_options='--rcfile ~/pylint.cfg --reports=n --jobs=2 --score=n --disable=I --disable=fixme --ignore-patterns=".*_pb2(_grpc)?.py$" '
 
-let g:ale_c_clangd_options=" --background-index --completion-style=detailed --header-insertion=iwyu --suggest-missing-includes -j 3"
-let g:ale_fixers={
-\   'rust': ['rustfmt'],
-\   'python': ['isort', 'black'],
-\   'c': [ 'clang-format'],
-\}
+
 let g:ale_rust_rls_executable='/Users/nitin/.cargo/bin/rls'
 let g:ale_rust_rls_toolchain='stable'
 let g:ale_rust_rls_config={
@@ -141,6 +133,33 @@ let g:ale_rust_rls_config={
 \        'clippy_preference': 'on'
 \   }
 \ }
+let g:ale_rust_analyzer_config={
+\   'rust': {
+\        'clippy_preference': 'on'
+\   }
+\ }
+
+let g:ale_rust_analyzer_executable='/Users/nitin/.cargo/bin/rust-analyzer'
+let g:ale_rust_cargo_use_clippy = 1
+let g:ale_rust_cargo_clippy_options = ' -D warnings '
+let g:ale_linters={
+\    'rust': ['analyzer'],
+\    'python': ['pylint', 'pycodestyle', 'pyls'],
+\    'c': ['clangd']
+\}
+
+"
+let g:ale_completion_enabled = 1
+let g:ale_python_pycodestyle_options="--max-line-lngth=120 --exclude='prot,__pycache__,*pb2*,build' --format='PEP8: %(path)s@%(row)d,%(col)d [%(code)s] %(text)s'"
+let g:ale_python_pylint_options='--rcfile ~/pylint.cfg --reports=n --jobs=2 --score=n --disable=I --disable=fixme --ignore-patterns=".*_pb2(_grpc)?.py$" '
+
+let g:ale_c_clangd_options=" --background-index --completion-style=detailed --header-insertion=iwyu -j 3"
+let g:ale_fixers={
+\   'rust': ['rustfmt'],
+\   'python': ['isort', 'black'],
+\   'c': [ 'clang-format'],
+\}
+
 " disable the red color for error highlights. hard to read the text under red
 " highlights.
 let g:ale_set_highlights = 0
@@ -148,6 +167,11 @@ let g:ale_set_highlights = 0
 autocmd FileType rust noremap <Leader>r :ALEFindReferences<CR>
 autocmd FileType python noremap <Leader>r :ALEFindReferences<CR>
 autocmd FileType c noremap <Leader>r :ALEFindReferences<CR>
+
+autocmd FileType rust noremap <Leader>d :ALEHover<CR>
+autocmd FileType python noremap <Leader>d :ALEHover<CR>
+autocmd FileType c noremap <Leader>d :ALEHover<CR>
+
 
 " easily cycle through lint errors.
 autocmd FileType rust noremap <Leader>l :ALENext<CR>
