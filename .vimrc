@@ -138,20 +138,32 @@ let g:ale_rust_analyzer_config={
 \        'clippy_preference': 'on'
 \   }
 \ }
-
+let g:ale_python_pyls_config = {
+\'pyls': {
+\   'plugins': {
+\       'pycodestyle': {
+\           'enabled': v:true,
+\           'maxLineLength': 120,
+\           'ignore': ['missing-function-docstring', 'missing-class-docstring', 'W503']
+\       }
+\   }
+\}
+\}
 let g:ale_rust_analyzer_executable='/Users/nitin/.cargo/bin/rust-analyzer'
 let g:ale_rust_cargo_use_clippy = 1
 let g:ale_rust_cargo_clippy_options = ' -D warnings '
 let g:ale_linters={
 \    'rust': ['analyzer'],
-\    'python': ['pylint', 'pycodestyle', 'pyls'],
+\    'python': ['pyls'],
 \    'c': ['clangd']
 \}
 
+" \    'python': ['pylint', 'pycodestyle', 'pyls'],
 "
 let g:ale_completion_enabled = 1
-let g:ale_python_pycodestyle_options="--max-line-lngth=120 --exclude='prot,__pycache__,*pb2*,build' --format='PEP8: %(path)s@%(row)d,%(col)d [%(code)s] %(text)s'"
-let g:ale_python_pylint_options='--rcfile ~/pylint.cfg --reports=n --jobs=2 --score=n --disable=I --disable=fixme --ignore-patterns=".*_pb2(_grpc)?.py$" '
+let g:ale_python_pycodestyle_options = '--max-line-length 120'
+let g:ale_python_pylint_options='--rcfile ~/pylint.cfg --reports=n --jobs=2 --score=n --disable=I
+\ --disable=fixme --disable=missing-function-docstring --max-line-length=120 --ignore-patterns=".*_pb2(_grpc)?.py$" '
 
 let g:ale_c_clangd_options=" --background-index --completion-style=detailed --header-insertion=iwyu -j 3"
 let g:ale_fixers={
@@ -163,6 +175,21 @@ let g:ale_fixers={
 " disable the red color for error highlights. hard to read the text under red
 " highlights.
 let g:ale_set_highlights = 0
+
+autocmd FileType rust noremap <Leader>s :ALESymbolSearch
+autocmd FileType python noremap <Leader>s :ALESymbolSearch
+autocmd FileType c noremap <Leader>s :ALESymbolSearch
+
+
+autocmd FileType rust noremap <Leader>q :ALEGoToDefinition -vsplit<CR>
+autocmd FileType python noremap <Leader>q :ALEGoToDefinition -vsplit<CR>
+autocmd FileType c noremap <Leader>q :ALEGoToDefiniton -vsplit<CR>
+
+autocmd FileType rust noremap <Leader>t :ALEGoToTypeDefinition -vsplit<CR>
+autocmd FileType python noremap <Leader>t :ALEGoToTypeDefinition -vsplit<CR>
+autocmd FileType c noremap <Leader>t :ALEGoToTypeDefiniton -vsplit<CR>
+
+
 
 autocmd FileType rust noremap <Leader>r :ALEFindReferences<CR>
 autocmd FileType python noremap <Leader>r :ALEFindReferences<CR>
