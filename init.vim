@@ -109,6 +109,7 @@ call plug#begin(stdpath('data') . '/site/plugged')
     Plug 'vim-airline/vim-airline'
     Plug 'vim-airline/vim-airline-themes'
     Plug 'preservim/tagbar'
+    Plug 'preservim/nerdtree'
 
 call plug#end()
 
@@ -288,3 +289,8 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 
+" nerdtree
+nnoremap <leader>b :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
