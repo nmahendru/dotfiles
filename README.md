@@ -14,3 +14,10 @@ sh -c 'curl -fLo "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/autoload/plug.
 # Then install all the packages using below on nvim startup:
 PlugInstall
 ```
+
+### alacritty
+Need to copy the config file in
+```bash
+mkdir -p ~/.config/alacritty
+cp alacritty.yml ~/.config/alacritty
+```
