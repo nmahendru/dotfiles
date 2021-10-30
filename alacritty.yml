@@ -35,7 +35,7 @@ font:
     # Needs to be powerline font if using zsh theme with powerline
     family: Menlo
   # Font size
-  size: 13
+  size: 11
 
   # Better font rendering for mac
   use_thin_strokes: true
@@ -88,3 +88,13 @@ shell:
 
 # Startup directory, unset or None for home directory
 working_directory: None
+
+scrolling:
+  # Maximum number of lines in the scrollback buffer.
+  # Specifying '0' will disable scrolling.
+  history: 100000
+
+  # Scrolling distance multiplier.
+  multiplier: 3
+
+
