@@ -15,7 +15,7 @@ window:
     x: 10
     y: 10
   # Remove buttons
-  decorations: none
+  decorations: full
   # Open in full screen
   startup_mode: Windowed
   # Dimensions if not SimpleFullscreen
@@ -96,5 +96,3 @@ scrolling:
 
   # Scrolling distance multiplier.
   multiplier: 3
-
-
