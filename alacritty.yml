@@ -38,7 +38,8 @@ font:
   size: 11
 
   # Better font rendering for mac
-  use_thin_strokes: true
+  # defaults write io.alacritty AppleFontSmoothing -int 0
+  # use_thin_strokes: true
 
 # Colors (Hyper)
 colors:
