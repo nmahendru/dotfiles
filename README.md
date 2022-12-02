@@ -18,6 +18,8 @@ PlugInstall
 ### alacritty
 ##QEMU commands
 qemu-system-x86_64 -boot d -hda /Users/nitin/QEMU/kali/kali1.qcow2 -m 8G -smp 4 -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::6666-:22 -accel hvf
+##QEMU with usb device passthrough
+qemu-system-x86_64 -boot d -hda /Users/nitin/QEMU/kali/kali1.qcow2 -m 8G -smp 4 -device e1000,netdev=net0 -netdev user,id=net0,hostfwd=tcp::6666-:22 -accel hvf -usb -device usb-host,hostbus=1,hostaddr=1
 
 qemu-img create -f qcow2  kali1.qcow2 60G
 
