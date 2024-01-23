@@ -106,14 +106,13 @@ call plug#begin(stdpath('data') . '/site/plugged')
     Plug 'tpope/vim-fugitive'
     Plug 'rust-lang/rust.vim'
     Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    Plug 'vim-airline/vim-airline'
-    Plug 'vim-airline/vim-airline-themes'
     Plug 'preservim/tagbar'
     Plug 'preservim/nerdtree'
 
 call plug#end()
 
-
+" fugitive
+:set statusline=%F
 
 " Settings for TagBar
 noremap <Leader>x :TagbarToggle<CR>
@@ -272,6 +271,9 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
+" attempt to fix popup color schemes.
+hi link CocFloating Normal
+
 " Add (Neo)Vim's native statusline support.
 " NOTE: Please see `:h coc-status` for integrations with external plugins that
 " provide custom statusline: lightline.vim, vim-airline.
@@ -298,7 +300,29 @@ nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
 " nerdtree
 nnoremap <leader>b :NERDTreeFocus<CR>
-nnoremap <C-n> :NERDTree<CR>
+"nnoremap <C-n> :NERDTree<CR>
 nnoremap <C-t> :NERDTreeToggle<CR>
-nnoremap <C-f> :NERDTreeFind<CR>
+" nnoremap <C-f> :NERDTreeFind<CR>
+let g:NERDTreeWinSize=60
 
+" fzf
+set rtp+=/opt/homebrew/opt/fzf
+
+" vim
+set statusline=%<%f\ %h%m%r%=%-14.(%l,%c%V%)\ %P
+
+" only run Ag in git files:
+" https://github.com/junegunn/fzf.vim/issues/406#issuecomment-321007689
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number '.shellescape(<q-args>), 0,
+  \   <bang>0 ? fzf#vim#with_preview({'options': '--no-hscroll'},'up:60%')
+  \           : fzf#vim#with_preview({'options': '--no-hscroll'},'right:50%'),
+  \   <bang>0)
+
+" resize windows
+nnoremap + :vertical resize +10<CR>
+nnoremap - :vertical resize -10<CR>
+
+" Git files shortcut
+:nnoremap <C-f> :GFiles<CR>
